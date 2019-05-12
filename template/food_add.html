@@ -1,0 +1,22 @@
+<htm>
+    <head>
+        <meta charset="UTF-8">
+        <title>菜品添加</title>
+        <h1>菜品添加</h1>
+    </head>
+    <body>
+    {% extends "_message.html" %}
+    {% block body %}
+    {% from "_field.html" import render_field %}
+    <form method="post" action="{{url_for('food.add')}}">
+        {{ form.hidden_tag() }}
+        <table>
+            {{render_field(form.name)}}
+            {{render_field(form.price)}}
+            <input name="restaurant" type="number" value="{{restaurant_id}}" hidden>
+        </table>
+        {{form.submit}}
+    </form>
+    {% endblock %}
+    </body>
+</htm>

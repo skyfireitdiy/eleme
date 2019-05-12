@@ -1,0 +1,22 @@
+<htm>
+    <head>
+        <meta charset="UTF-8">
+        <title>用户登录</title>
+        <h1>用户登录</h1>
+    </head>
+    <body>
+    {% extends "_message.html" %}
+    {% block body %}
+    {% from "_field.html" import render_field %}
+    <form method="post" action="{{url_for('user.login')}}">
+        {{ form.hidden_tag() }}
+        <table>
+            {{render_field(form.nickname)}}
+            {{render_field(form.password)}}
+        </table>
+        {{form.submit}}
+    </form>
+    <a href="{{url_for('user.register')}}"><button>注册</button></a>
+    {% endblock %}
+    </body>
+</htm>
