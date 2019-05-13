@@ -1,27 +1,130 @@
 <htm>
     <head>
         <meta charset="UTF-8">
-        <title>用户注册</title>
-        <h1>用户注册</h1>
+        <title>User Register</title>
     </head>
     <body>
-    {% extends "_message.html" %}
+    {% extends "_layout.html" %}
     {% block body %}
-    {% from "_field.html" import render_field %}
-        <form method="post" action="{{url_for('user.register')}}">
+        <form style="width: 100%; text-align: center; margin-top: 10%;" method="post" action="{{url_for('user.register')}}">
             {{ form.hidden_tag() }}
-            <table>
-                {{render_field(form.nickname)}}
-                {{render_field(form.name)}}
-                {{render_field(form.password1)}}
-                {{render_field(form.password2)}}
-                {{render_field(form.phone)}}
-                {{render_field(form.address)}}
-                {{render_field(form.role)}}
-            </table>
-            {{form.submit}}
+            <h1>User Register</h1>
+            <br>
+            <br>
+            <div class="layui-inline">
+                <label class="layui-form-label">Nickname</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" value="{{form.nickname.data}}" name="nickname" type="text" >
+                    {% if form.nickname.errors %}
+                    <ul>
+                        {% for error in form.nickname.errors %}
+                        <li class="layui-bg-red">{{error}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="layui-inline">
+                <label class="layui-form-label">Name</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" value="{{form.name.data}}" name="name" type="text" >
+                    {% if form.name.errors %}
+                    <ul>
+                        {% for error in form.name.errors %}
+                        <li class="layui-bg-red">{{error}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="layui-inline">
+                <label class="layui-form-label">Password</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="password1" type="password" >
+                    {% if form.password1.errors %}
+                    <ul>
+                        {% for error in form.password1.errors %}
+                        <li class="layui-bg-red">{{error}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="layui-inline">
+                <label class="layui-form-label">Confirm Password</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" name="password2" type="password" >
+                    {% if form.password2.errors %}
+                    <ul>
+                        {% for error in form.password2.errors %}
+                        <li class="layui-bg-red">{{error}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="layui-inline">
+                <label class="layui-form-label">Phone</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" value="{{form.phone.data}}" name="phone" type="number" >
+                    {% if form.phone.errors %}
+                    <ul>
+                        {% for error in form.phone.errors %}
+                        <li class="layui-bg-red">{{error}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="layui-inline">
+                <label class="layui-form-label">Address</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" value="{{form.address.data}}" name="address" type="text" >
+                    {% if form.address.errors %}
+                    <ul>
+                        {% for error in form.address.errors %}
+                        <li class="layui-bg-red">{{error}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="layui-inline">
+                <label class="layui-form-label">Role</label>
+                <div class="layui-input-block">
+                    <select name="role" value="{{form.role.data}}" class="layui-select layui-input">
+                        <option value="0">Merchant</option>
+                        <option value="1">Customer</option>
+                        <option value="2">Delivery staff</option>
+                    </select>
+                    {% if form.role.errors %}
+                    <ul>
+                        {% for error in form.role.errors %}
+                        <li class="layui-bg-red">{{error}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            <br>
+            <button type="submit" class="layui-btn layui-btn-radius layui-btn-normal">Register</button>
+            <br/>
+            <br/>
+            <a href="{{url_for('user.login')}}">Existing account, login</a>
         </form>
-        <a href="{{url_for('user.login')}}"><button>登录</button></a>
     {% endblock %}
     </body>
 </htm>

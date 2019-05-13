@@ -1,0 +1,39 @@
+<htm>
+    <head>
+        <meta charset="UTF-8">
+        <title>Order</title>
+        <h1>Order</h1>
+    </head>
+    <body>
+    {% extends "_layout.html" %}
+    {% block body %}
+    <form method="post" action="{{url_for('order.add')}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="restaurant" value="{{restaurant}}" />
+        <table class="layui-table">
+            <thead class="layui-table-header">
+            <tr>
+                <col>
+                <col width="100">
+                <col width="100">
+                <td>Name</td>
+                <td>Price</td>
+                <td>Choose</td>
+            </tr>
+            </thead>
+            {% for food in foods %}
+            <tr>
+                <td>{{ food.name }}</td>
+                <td>{{ food.price }}</td>
+                <td>
+                    <input name="foods" type="checkbox" value="{{food.id}}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button type="submit" class="layui-btn layui-btn-radius layui-btn-normal">Submit orders</button>
+    </form>
+    {% endblock %}
+
+    </body>
+</htm>

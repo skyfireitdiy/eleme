@@ -1,0 +1,34 @@
+<htm>
+    <head>
+        <meta charset="UTF-8">
+        <title>Restaurant</title>
+        <h1>Restaurant</h1>
+    </head>
+    <body>
+    {% extends "_layout.html" %}
+    {% block body %}
+    <table class="layui-table">
+        <thead class="layui-table-header">
+        <col width="200">
+        <col>
+        <col width="200">
+        <tr>
+            <td>Name</td>
+            <td>Address</td>
+            <td>Operation</td>
+        </tr>
+        </thead>
+        {% for restaurant in restaurants %}
+        <tr>
+            <td>{{ restaurant.name }}</td>
+            <td>{{ restaurant.address }}</td>
+            <td>
+                <a href="{{url_for('food.list_food')}}?id={{restaurant.id}}"><button class="layui-btn-normal layui-btn layui-btn-radius">Order here</button></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endblock %}
+
+    </body>
+</htm>

@@ -1,0 +1,88 @@
+<htm>
+    <head>
+        <meta charset="UTF-8">
+        <title>Order</title>
+        <h1>Order</h1>
+    </head>
+    <body>
+    {% extends "_layout.html" %}
+    {% block body %}
+    <table class="layui-table">
+        <thead class="layui-header">
+        <col width="250">
+        <col width="200">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col width="100">
+        <col>
+        <tr>
+            <td>Order serial number</td><td>Time</td><td>Order amount</td><td>Restaurant</td><td>Customer</td><td>Delivery staff</td><td>Status</td><td>Operation</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in order_info %}
+            <tr>
+                <td>{{order.serial_number}}</td>
+                <td>{{order.time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
+                <td>{{order.total}}</td>
+                <td>{{order.restaurant.name}}</td>
+                <td>{{order.custom.name}}</td>
+                <td>
+                    {% if order.courier %}
+                        {{order.courier.name}}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if order.status == 0 %}
+                        Order placed
+                    {% elif order.status == 1 %}
+                        Accepted
+                    {% elif order.status == 2 %}
+                        Refused
+                    {% elif order.status == 3 %}
+                        Canceled
+                    {% elif order.status == 4 %}
+                        Delivery
+                    {% else %}
+                        Completed
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{{url_for('order.detail')}}?id={{order.serial_number}}"><button class="layui-btn-warm layui-btn layui-btn-radius">Detail</button></a>
+                    {% if user.role == 0 %}
+                        {% if order.status == 0 %}
+                            <a href="{{url_for('order.set_status')}}?id={{order.serial_number}}&status=2"><button class="layui-btn-danger layui-btn layui-btn-radius">Refuse</button></a>
+                            <a href="{{url_for('order.set_status')}}?id={{order.serial_number}}&status=1"><button class="layui-btn-green layui-btn layui-btn-radius">Accept</button></a>
+                        {% elif order.status == 1 %}
+                            <form action="{{url_for('order.set_courier')}}" method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <input type="hidden" name="serial_number" value="{{order.serial_number}}" />
+                                <select name="courier" class="layui-select">
+                                    {% for courier in couriers %}
+                                        <option value="{{courier.id}}">{{courier.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="layui-btn-normal layui-btn layui-btn-radius">Delivery</button>
+                            </form>
+
+                        {% endif %}
+                    {% elif user.role == 1 %}
+                        {% if order.status == 0 %}
+                            <a href="{{url_for('order.set_status')}}?id={{order.serial_number}}&status=4"><button class="layui-btn-danger layui-btn layui-btn-radius">Cancel</button></a>
+                        {% endif %}
+                    {% else %}
+                        {% if order.status == 4 %}
+                            <a href="{{url_for('order.set_status')}}?id={{order.serial_number}}&status=5"><button class="layui-btn-green layui-btn layui-btn-radius">Complete</button></a>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
+    </body>
+</htm>

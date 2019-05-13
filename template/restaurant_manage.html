@@ -1,18 +1,21 @@
 <htm>
     <head>
         <meta charset="UTF-8">
-        <title>餐馆管理</title>
-        <h1>餐馆管理</h1>
+        <title>Restaurant Management</title>
+        <h1>Restaurant Management</h1>
     </head>
     <body>
-    {% extends "_message.html" %}
+    {% extends "_layout.html" %}
     {% block body %}
-    <table>
-        <thead>
+    <table class="layui-table">
+        <thead class="layui-table-header">
+        <col width="200">
+        <col>
+        <col width="300">
         <tr>
-            <td>名字</td>
-            <td>地址</td>
-            <td>操作</td>
+            <td>Name</td>
+            <td>Address</td>
+            <td>Operation</td>
         </tr>
         </thead>
     {% for restaurant in restaurants %}
@@ -20,21 +23,24 @@
             <td>{{ restaurant.name }}</td>
             <td>{{ restaurant.address }}</td>
             <td>
-                <button onclick="on_delete({{restaurant.id}});">删除</button>
+                <button class="layui-btn layui-btn-danger layui-btn-radius" onclick="on_delete({{restaurant.id}});">Delete</button>
                 <a href="{{url_for('food.manage')}}?id={{restaurant.id}}">
-                    <button>菜单管理</button>
+                    <button class="layui-btn layui-btn-radius layui-btn-normal">Food Management</button>
                 </a>
             </td>
         </tr>
     {% endfor %}
     </table>
-    <a href="{{ url_for('restaurant.add') }}"><button>添加</button></a>
+    <a href="{{ url_for('restaurant.add') }}"><button class="layui-btn layui-btn-radius layui-bg-green">Add</button></a>
 
     <script>
         on_delete = function(restaurant_id) {
-            if(confirm("确认删除？")){
-                window.location="{{url_for('restaurant.delete')}}" + "?id=" + restaurant_id;
-            }
+            layui.use(["layer"], function () {
+                let layer = layui.layer;
+                layer.confirm("Confirm to delete this item?", function () {
+                    window.location="{{url_for('restaurant.delete')}}" + "?id=" + restaurant_id;
+                })
+            })
         }
     </script>
     {% endblock %}

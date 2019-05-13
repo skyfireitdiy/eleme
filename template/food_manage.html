@@ -1,18 +1,21 @@
 <htm>
     <head>
         <meta charset="UTF-8">
-        <title>菜单管理</title>
-        <h1>菜单管理</h1>
+        <title>Food Management</title>
+        <h1>Food Management</h1>
     </head>
     <body>
-    {% extends "_message.html" %}
+    {% extends "_layout.html" %}
     {% block body %}
-    <table>
-        <thead>
+    <table class="layui-table">
+        <thead class="layui-table-header">
+        <col>
+        <col width="100">
+        <col width="200">
         <tr>
-            <td>名称</td>
-            <td>价格</td>
-            <td>操作</td>
+            <td>Name</td>
+            <td>Price</td>
+            <td>Operation</td>
         </tr>
         </thead>
         {% for food in foods %}
@@ -20,16 +23,16 @@
             <td>{{ food.name }}</td>
             <td>{{ food.price }}</td>
             <td>
-                <button onclick="on_delete({{food.id}});">删除</button>
+                <button class="layui-btn-danger layui-btn layui-btn-radius" onclick="on_delete({{food.id}});">Delete</button>
             </td>
         </tr>
         {% endfor %}
     </table>
-    <a href="{{ url_for('food.add') }}?id={{restaurant_id}}"><button>添加</button></a>
+    <a href="{{ url_for('food.add') }}?id={{restaurant_id}}"><button class="layui-btn-normal layui-btn layui-btn-radius">Add</button></a>
 
     <script>
         on_delete = function(food_id) {
-            if(confirm("确认删除？")){
+            if(confirm("Confirm to delete this item?")){
                 window.location="{{url_for('food.delete')}}" + "?id=" + food_id + "&res=" + {{restaurant_id}};
             }
         }

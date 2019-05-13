@@ -1,0 +1,33 @@
+<htm>
+    <head>
+        <meta charset="UTF-8">
+        <title>Order Details</title>
+        <h1>Order Details</h1>
+    </head>
+    <body>
+    {% extends "_layout.html" %}
+    {% block body %}
+    <table class="layui-table">
+        <thead class="layui-table-header">
+        <col>
+        <col width="100">
+        <tr>
+            <td>Food</td><td>Price</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for detail in details %}
+        <tr>
+            <td>
+                {{ detail.food.name }}
+            </td>
+            <td>
+                {{ detail.food.price }}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
+    </body>
+</htm>

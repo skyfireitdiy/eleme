@@ -1,22 +1,52 @@
-<htm>
+<html>
     <head>
         <meta charset="UTF-8">
-        <title>用户登录</title>
-        <h1>用户登录</h1>
+        <title>User Login</title>
     </head>
     <body>
-    {% extends "_message.html" %}
+    {% extends "_layout.html" %}
     {% block body %}
-    {% from "_field.html" import render_field %}
-    <form method="post" action="{{url_for('user.login')}}">
+    <form style="width: 100%; text-align: center; margin-top: 15%;" method="post" action="{{url_for('user.login')}}">
         {{ form.hidden_tag() }}
-        <table>
-            {{render_field(form.nickname)}}
-            {{render_field(form.password)}}
-        </table>
-        {{form.submit}}
+        <h1>User Login</h1>
+<!--        <img src="/static/images/logo.jpg" style="width: 200px">-->
+        <br>
+        <br>
+        <div class="layui-inline">
+            <label class="layui-form-label">Nickname</label>
+            <div class="layui-input-block">
+                <input class="layui-input" value="{{form.nickname.data}}" name="nickname" type="text" >
+                {% if form.nickname.errors %}
+                <ul>
+                    {% for error in form.nickname.errors %}
+                    <li class="layui-bg-red">{{error}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="layui-inline">
+            <label class="layui-form-label">Password</label>
+            <div class="layui-input-block">
+                <input class="layui-input" value="{{form.nickname.data}}" name="password" type="password" >
+                {% if form.password.errors %}
+                <ul>
+                    {% for error in form.password.errors %}
+                    <li class="layui-bg-red">{{error}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        <br>
+        <button class="layui-btn layui-btn-normal layui-btn-radius">Login</button>
+        <br>
+        <br>
+        <a href="{{url_for('user.register')}}">New User Registration</a>
     </form>
-    <a href="{{url_for('user.register')}}"><button>注册</button></a>
     {% endblock %}
     </body>
-</htm>
+</html>

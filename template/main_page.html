@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>eleme</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/static/layui/css/layui.css"  media="all">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin" id="app">
+    <div class="layui-header">
+        <div class="layui-logo">
+            {% if user_role == 0 %}
+                Merchant Management
+            {% elif user_role == 1 %}
+                User Ordering
+            {% else %}
+                Order Delivery
+            {% endif %}
+        </div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item" v-if="user_role===0" @click="big_type='merchant_service'"><a>Merchant service</a></li>
+            <li class="layui-nav-item" v-if="user_role===1" @click="big_type='user_service'"><a>Customer service</a></li>
+            <li class="layui-nav-item" v-if="user_role===2" @click="big_type='courier_service'"><a>Delivery service</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    [[ user_name ]]
+                </a>
+            </li>
+            <li class="layui-nav-item"><a href="{{url_for('user.logout')}}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test" v-if="big_type==='merchant_service'">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="">Management</a>
+                    <dl class="layui-nav-child">
+                        <dd @click="on_restaurant_manage()"><a>Restaurant Management</a></dd>
+                        <dd @click="on_order_manage()"><a>Order Management</a></dd>
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test" v-if="big_type==='user_service'">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="">Service</a>
+                    <dl class="layui-nav-child">
+                        <dd @click="on_order_add()"><a>Order</a></dd>
+                        <dd @click="on_order_manage()"><a>Order Management</a></dd>
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test" v-if="big_type==='courier_service'">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="">Service</a>
+                    <dl class="layui-nav-child">
+                        <dd @click="on_order_manage()"><a>Order Management</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <iframe id="iframe" width="100%" style="border: none; height: 100%;"></iframe>
+    </div>
+
+    <div class="layui-footer">
+        eleme
+    </div>
+</div>
+<script src="/static/layui/layui.all.js" charset="utf-8"></script>
+<script src="/static/vue.js"></script>
+<script>
+    //JavaScript代码区域
+    layui.use(['element', 'jquery'], function(){
+        let element = layui.element;
+        let $ = layui.jquery;
+
+        let app = new Vue({
+            el:"#app",
+            delimiters: ["[[", "]]"],
+            data:{
+                user_name: "{{user_name}}",
+                user_role: {{user_role}},
+                big_type : ""
+            },
+            methods: {
+                on_restaurant_manage: function () {
+                    $("#iframe").attr("src", "{{url_for('restaurant.manage')}}");
+                },
+                on_order_manage: function(){
+                    $("#iframe").attr("src",  "{{url_for('order.get')}}");
+                },
+                on_order_add : function() {
+                    $("#iframe").attr("src",  "{{url_for('restaurant.list_restaurant')}}");
+                }
+            }
+        })
+    });
+</script>
+</body>
+</html>

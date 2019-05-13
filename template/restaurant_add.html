@@ -1,20 +1,46 @@
 <htm>
     <head>
         <meta charset="UTF-8">
-        <title>餐馆添加</title>
-        <h1>餐馆添加</h1>
+        <title>Add Restaurant</title>
+        <h1>Add Restaurant</h1>
     </head>
     <body>
-    {% extends "_message.html" %}
+    {% extends "_layout.html" %}
     {% block body %}
-    {% from "_field.html" import render_field %}
     <form method="post" action="{{url_for('restaurant.add')}}">
         {{ form.hidden_tag() }}
-        <table>
-            {{render_field(form.name)}}
-            {{render_field(form.address)}}
-        </table>
-        {{form.submit}}
+
+        <div class="layui-inline">
+            <label class="layui-form-label">Name</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="name" type="text" >
+                {% if form.name.errors %}
+                <ul>
+                    {% for error in form.name.errors %}
+                    <li class="layui-bg-red">{{error}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="layui-inline">
+            <label class="layui-form-label">Address</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="address" type="text" >
+                {% if form.address.errors %}
+                <ul>
+                    {% for error in form.address.errors %}
+                    <li class="layui-bg-red">{{error}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        <br>
+        <button class="layui-btn layui-btn-normal layui-btn-radius">Add</button>
     </form>
     {% endblock %}
     </body>

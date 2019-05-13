@@ -1,5 +1,11 @@
-from functools import wraps
+"""
+用户管理
+"""
+
 import flask_login
+
+from functools import wraps
+from flask_login import current_user
 from flask import *
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, SubmitField
@@ -9,10 +15,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from pony.orm import *
 
 user_blueprints = blueprints.Blueprint("user", "user", static_folder="static", template_folder="template",
-                                       url_prefix="/user")
+                                       url_prefix="/user", static_url_path="/static")
 
 
 def merchant_required(func):
+    """
+    判断用户是否是商家的包装器，如果不是，就跳转到登录界面
+    """
+
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if request.method in flask_login.config.EXEMPT_METHODS:
@@ -29,6 +39,10 @@ def merchant_required(func):
 
 
 def custom_required(func):
+    """
+    判断用户是否是客户的包装器，如果不是，就跳转到登录界面
+    """
+
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if request.method in flask_login.config.EXEMPT_METHODS:
@@ -45,6 +59,10 @@ def custom_required(func):
 
 
 def delivery_required(func):
+    """
+    判断用户是否是派单员的包装器，如果不是，就跳转到登录界面
+    """
+
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if request.method in flask_login.config.EXEMPT_METHODS:
@@ -62,33 +80,46 @@ def delivery_required(func):
 
 @db_session
 def get_user(user_id):
+    """
+    获取用户对象
+    :param user_id: 用户id
+    :return: 用户对象
+    """
     return select(r for r in User if r.id == user_id).first()
 
 
 class LoginForm(FlaskForm):
-    nickname = StringField("昵称", validators=[DataRequired()])
-    password = PasswordField("密码", validators=[DataRequired()])
-    submit = SubmitField('登录')
+    """
+    登录表单
+    """
+    nickname = StringField("Nickname", validators=[DataRequired()], default="")
+    password = PasswordField("Password", validators=[DataRequired()], default="")
+    submit = SubmitField('Login')
 
 
 class RegisterForm(FlaskForm):
-    nickname = StringField("昵称", validators=[DataRequired(), Length(1, 20, "昵称不大于20位")])
-    name = StringField("姓名", validators=[DataRequired(), Length(1, 20, "姓名不大于20位")])
-    password1 = PasswordField("密码", validators=[DataRequired(), Length(8, 16, "密码长度必须在8到16位")])
-    password2 = PasswordField("确认密码", validators=[DataRequired(), EqualTo("password1", "密码不一致")])
-    phone = StringField("电话", validators=[DataRequired(), Regexp(r"\d{6,13}", 0, "电话必须为6到13位数字")])
-    address = StringField("地址", validators=[DataRequired()])
-    role = SelectField("角色", choices=[('0', "商家"), ('1', "客户"), ('2', "配送员")])
-    submit = SubmitField('注册')
+    """
+    注册表单
+    """
+    nickname = StringField("Nickname", validators=[DataRequired(), Length(1, 20)], default="")
+    name = StringField("Name", validators=[DataRequired(), Length(1, 20)], default="")
+    password1 = PasswordField("Password", validators=[DataRequired(), Length(8, 16)], default="")
+    password2 = PasswordField("Confirm Password", validators=[DataRequired(), EqualTo("password1")], default="")
+    phone = StringField("Phone", validators=[DataRequired(), Regexp(r"\d{6,13}", 0)], default="")
+    address = StringField("Address", validators=[DataRequired()], default="")
+    role = SelectField("Role", choices=[('0', "Merchant"), ('1', "Customer"), ('2', "Delivery staff")])
 
 
 @user_blueprints.route("/register", methods=["GET", "POST"])
 @db_session
 def register():
+    """
+    用户注册
+    """
     form = RegisterForm()
     if form.validate_on_submit():
         if select(r for r in User if r.nickname == form.nickname.data).first() is not None:
-            form.nickname.errors.append('用户 "%s" 已存在' % form.nickname.data)
+            form.nickname.errors.append('User "%s" already exist' % form.nickname.data)
             return render_template('register.html', form=form)
         User(
             nickname=form.nickname.data,
@@ -98,7 +129,7 @@ def register():
             address=form.address.data,
             role=int(form.role.data))
         db.commit()
-        flash('用户 "%s" 注册成功，请登录' % form.nickname.data)
+        flash('User "%s" registration is successful, Please login' % form.nickname.data)
         return redirect(url_for("user.login"))
     return render_template('register.html', form=form)
 
@@ -106,17 +137,40 @@ def register():
 @user_blueprints.route("/login", methods=["GET", "POST"])
 @db_session
 def login():
+    """
+    用户登录
+    """
     form = LoginForm()
     if form.validate_on_submit():
         user = select(r for r in User if r.nickname == form.nickname.data).first()
         if user is None:
-            form.nickname.errors.append("用户不存在")
+            form.nickname.errors.append("User does not exist")
             return render_template("login.html", form=form)
         if not check_password_hash(user.password, form.password.data):
-            form.password.errors.append("密码错误")
+            form.password.errors.append("Password error")
             return render_template("login.html", form=form)
         flask_login.login_user(user)
-        if user.role == 0:
-            return redirect(url_for("restaurant.manage"))
-        return "登陆成功"
+        return redirect(url_for("user.main_page"))
     return render_template("login.html", form=form)
+
+
+@user_blueprints.route("/main_page", methods=["GET", "GET"])
+@flask_login.login_required
+@db_session
+def main_page():
+    """
+    主页面
+    """
+    return render_template("main_page.html", user_name=current_user.nickname,
+                           user_role=current_user.role)
+
+
+@user_blueprints.route("/logout", methods=["GET", "GET"])
+@flask_login.login_required
+@db_session
+def logout():
+    """
+    注销
+    """
+    flask_login.logout_user()
+    return redirect(url_for("user.login"))

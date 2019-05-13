@@ -1,21 +1,47 @@
 <htm>
     <head>
         <meta charset="UTF-8">
-        <title>菜品添加</title>
-        <h1>菜品添加</h1>
+        <title>Add Food</title>
+        <h1>Add Food</h1>
     </head>
     <body>
-    {% extends "_message.html" %}
+    {% extends "_layout.html" %}
     {% block body %}
-    {% from "_field.html" import render_field %}
-    <form method="post" action="{{url_for('food.add')}}">
+    <form class="layui-form" method="post" action="{{url_for('food.add')}}">
         {{ form.hidden_tag() }}
-        <table>
-            {{render_field(form.name)}}
-            {{render_field(form.price)}}
-            <input name="restaurant" type="number" value="{{restaurant_id}}" hidden>
-        </table>
-        {{form.submit}}
+        <div class="layui-inline">
+            <label class="layui-form-label">Name</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="name" type="text" >
+                {% if form.name.errors %}
+                <ul>
+                    {% for error in form.name.errors %}
+                    <li class="layui-bg-red">{{error}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="layui-inline">
+            <label class="layui-form-label">Price</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="price" type="number" >
+                {% if form.price.errors %}
+                <ul>
+                    {% for error in form.price.errors %}
+                    <li class="layui-bg-red">{{error}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+        </div>
+        <br>
+        <br>
+        <input name="restaurant" type="number" value="{{restaurant_id}}" hidden>
+        <button type="submit" class="layui-btn layui-btn-normal layui-btn-radius" >Add</button>
     </form>
     {% endblock %}
     </body>

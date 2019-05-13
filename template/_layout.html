@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="/static/layui/css/layui.css"  media="all">
+{% with messages = get_flashed_messages(category_filter=["message"]) %}
+{% if messages %}
+<ul class=flashes>
+    {% for message in messages %}
+    <li class="layui-bg-green">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<ul class=flashes>
+    {% for error in errors %}
+    <li class="layui-bg-red">{{ error }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+{% block body %}{% endblock %}
+<script src="/static/layui/layui.all.js" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'jquery', "form"], function() {
+        let element = layui.element;
+        let form = layui.form;
+        let $ = layui.jquery;
+
+        element.init();
+        form.render();
+    });
+</script>
